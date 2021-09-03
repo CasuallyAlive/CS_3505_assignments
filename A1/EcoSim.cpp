@@ -32,45 +32,52 @@ void plotPopulations(double, double, double);
 */
 void incrementCounter(int *);
 
-/*
-* Prints the row of the chart.
-*/
-void printRow();
-
 const int iterations = 500;
 const double scaleFactor = 0.1;
-std::string row = "";
+
+/*
+* Function that is called when an invalid input is provided within the main function's prompts.
+*/
+void invalidInputExit()
+{
+    std::cout << "The input is not a valid, please restart the program." << std::endl;
+    std::cin.ignore();
+    std::cin.get();
+}
 
 int main()
 {
     double foxPopulation, rabbitPopulation;
     std::cout << "This is a fox and rabbit population simulator." << std::endl;
-    std::cout << "Please input the initial fox population: ";
+    std::cout << "Please input the initial fox population: \n";
 
     if (!(std::cin >> foxPopulation))
     {
-        std::cout << "The input is not a valid, please restart the program." << std::endl;
-        return -1;
+        invalidInputExit();
+        return 0;
     }
-    std::cout << "and the initial rabbit population: ";
+    std::cout << "and the initial rabbit population: \n";
     if (!(std::cin >> rabbitPopulation))
     {
-        std::cout << "The input is not a valid, please restart the program." << std::endl;
-        return -1;
+        invalidInputExit();
+        return 0;
     }
 
     runSimulation(iterations, rabbitPopulation, foxPopulation);
-    std::cout << "The simulation has terminated, press 'Enter' to exit." << std::endl;
+
+    std::cout << "\nThe simulation has terminated, press 'Enter' to exit." << std::endl;
     std::cin.ignore();
     std::cin.get();
+    return 0;
 }
 
 void runSimulation(int iterations, double rabbitPopulation, double foxPopulation)
 {
-    double g{0.2}, p{0.0022}, c{0.6}, m{0.2}, K{1000.0};
-    for (int i = 0; i < iterations && (rabbitPopulation > 1 && foxPopulation > 1); incrementCounter(&i))
+    const double g{0.2}, p{0.0022}, c{0.6}, m{0.2}, K{1000.0};
+    for (int i = 0; i <= iterations && (rabbitPopulation > 1 && foxPopulation > 1); incrementCounter(&i))
     {
         plotPopulations(rabbitPopulation, foxPopulation, scaleFactor);
+        std::cout << std::endl;
         updatePopulations(g, p, c, m, K, rabbitPopulation, foxPopulation);
     }
 }
@@ -86,47 +93,44 @@ void updatePopulations(double g, double p, double c, double m, double K, double 
 
 void plotCharacter(int numberOfSpaces, char letter)
 {
+    if (numberOfSpaces < 1)
+    {
+        std::cout << letter;
+        return;
+    }
+    std::string row = "";
     for (int i = 0; i <= numberOfSpaces; i++)
     {
+        // Ternary that adds spaces to a row until the position of the character is reached.
         row = (i == numberOfSpaces) ? row + letter : row + " ";
     }
+    std::cout << row;
 }
 
 void plotPopulations(double rabbitPopulation, double foxPopulation, double scaleFactor)
 {
-    int rabbitCharPosition, foxCharPosition;
-    if (std::floor(rabbitPopulation) == std::floor(foxPopulation))
+    int rabbitCharPosition = std::floor(rabbitPopulation * scaleFactor), foxCharPosition = std::floor(foxPopulation * scaleFactor);
+    int rabbitNum = std::floor(rabbitPopulation), foxNum = std::floor(foxPopulation);
+    if (rabbitNum == foxNum)
     {
-        int position = std::floor(scaleFactor * rabbitPopulation);
+        int position = rabbitCharPosition;
         plotCharacter(position, '*');
-        printRow();
         return;
     }
-    if (rabbitPopulation < foxPopulation)
+    // Ternaries that set one population as the leftmost character on the chart or the rightmost character. The rightmost character's position is determined by only adding the difference of the total spaces for correct positioning on the console.
+    rabbitCharPosition = (rabbitNum < foxNum) ? rabbitCharPosition : rabbitCharPosition - foxCharPosition - 1;
+    foxCharPosition = (foxNum < rabbitNum) ? foxCharPosition : foxCharPosition - rabbitCharPosition - 1;
+    // The rightmost character is written to the console first.
+    if (rabbitNum < foxNum)
     {
-        rabbitCharPosition = std::floor(scaleFactor * rabbitPopulation);
-        // plots the char for rabbits at it's corresponding location.
         plotCharacter(rabbitCharPosition, 'r');
-        foxCharPosition = std::floor(scaleFactor * foxPopulation) - rabbitCharPosition;
-        // plots the char for foxes at it's corresponding location.
         plotCharacter(foxCharPosition, 'F');
-        printRow();
-        return;
     }
-
-    foxCharPosition = std::floor(scaleFactor * foxPopulation);
-    // plots the char for rabbits at it's corresponding location.
-    plotCharacter(foxCharPosition, 'F');
-    rabbitCharPosition = std::floor(scaleFactor * rabbitPopulation) - foxCharPosition;
-    // plots the char for foxes at it's corresponding location.
-    plotCharacter(rabbitCharPosition, 'r');
-    printRow();
-}
-
-void printRow()
-{
-    std::cout << row << std::endl;
-    row = "";
+    else
+    {
+        plotCharacter(foxCharPosition, 'F');
+        plotCharacter(rabbitCharPosition, 'r');
+    }
 }
 
 void incrementCounter(int *count)
