@@ -16,10 +16,7 @@
 
 HaruPDF::HaruPDF(std::string pdfName)
 {
-    // Replaces:
-    //strcpy(fname, argv[0]);
-    //strcat(fname, ".pdf");
-    this->pdfName = pdfName + ".pdf";
+    this->pdfName = pdfName;
 
     pdf = HPDF_New(NULL, NULL);
 }
@@ -64,5 +61,6 @@ void HaruPDF::endWritingToPage()
 }
 void HaruPDF::generatePDF()
 {
+    pdfName += ".pdf";
     HPDF_SaveToFile(pdf, pdfName.c_str());
 }

@@ -15,6 +15,7 @@ Spiral::Spiral(double centerX, double centerY, double startingAngle, double star
 }
 double Spiral::getTextX()
 {
+    // Converts angle back to standard position, i.e. 0 degrees starts on the positive x-axis. Essential for correct position calculations.
     return currentRadius * cos(toRadians(90 - currentAngle)) + centerX;
 }
 double Spiral::getTextY()
@@ -28,8 +29,8 @@ double Spiral::getLetterAngle()
 Spiral &Spiral::operator++()
 {
     // A model that uses the decaying sigmoid function to simulate a larger rate of decrement for the angle at the beginning of the simulation.
-    double delta{10 * (1 + 1 / (1 + exp2(0.5 * simulationElapsed - 20)))};
-    this->currentAngle += delta;
+    double angleIncrement{10 * (1 + 1 / (1 + exp2(0.5 * simulationElapsed - 20)))};
+    this->currentAngle += angleIncrement;
     // logarithmic growth for the radius of the spiral
     this->currentRadius += log10(simulationElapsed + 2);
     this->simulationElapsed++;

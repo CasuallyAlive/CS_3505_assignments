@@ -12,7 +12,7 @@
 #include "Spiral.h"
 
 // Draws a spiral out of the parameter string, and outputs the result to a pdf file.
-void generateSpiralPDF(std::string, HaruPDF &, Spiral &);
+void generateSpiralPDF(std::string &, HaruPDF &, Spiral &);
 // Terminates the program when called, lets the user know before-hand that an empty string was entered.
 int badInput();
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     const double startingAngleOfSpiral = 0;
     const double startSpiralRadius = 50;
 
-    HaruPDF spiralPDF("SpiralPDF");
+    HaruPDF spiralPDF("spiralPDF");
     std::string inputText;
     if (argv[1] == NULL)
     {
@@ -45,7 +45,7 @@ int badInput()
     std::cin.get();
     return 0;
 }
-void generateSpiralPDF(std::string inputText, HaruPDF &spiralPDF, Spiral &spiralSimulator)
+void generateSpiralPDF(std::string &inputText, HaruPDF &spiralPDF, Spiral &spiralSimulator)
 {
     spiralPDF.addPage();
     spiralPDF.startWritingToPage();
