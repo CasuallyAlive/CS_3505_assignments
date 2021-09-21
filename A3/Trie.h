@@ -11,16 +11,29 @@
 class Trie
 {
     Node head;
+    /**
+     * Helper for the 'addAWord' method.
+     */
+    void addAWord(std::string, unsigned int &, Node &);
+    /**
+     * Helper for the 'isAWord' method.
+     */
+    bool isAWord(std::string, unsigned int &, Node &);
+    /**
+     * Helper for the 'allWordsStartingWithPrefix' method.
+     */
+    std::vector<std::string> allWordsStartingWithPrefix(std::string, unsigned int &, Node &);
 
 public:
     Trie();
-    Trie(const Trie &other);
-    Trie &operator=(Trie other);
+    Trie(const Trie &);
+    Trie &operator=(Trie);
     /**
      * A method that accepts an std::string and returns void. The word passed into the method should be added to the Trie object. 
      * Duplicate adds should not change the Trie. You may assume that the word is only made up of lower-case characters from a-z.
      */
     void addAWord(std::string);
+
     /**
      * A method that accepts a std::string and returns bool. The argument is a string assumed to be made up of characters 'a'-'z'.
      * If the word is found in the Trie, the method should return true, otherwise return false.  A Trie should report that an empty string is not in the Trie.
