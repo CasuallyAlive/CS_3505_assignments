@@ -23,10 +23,18 @@ class Trie
      * Helper for the 'allWordsStartingWithPrefix' method.
      */
     std::vector<std::string> allWordsStartingWithPrefix(std::string, unsigned int &, Node &);
+    Node *findNodeAtPrefix(std::string, unsigned int, Node *);
+    void addWordsAtNodeToVector(std::string &, Node &, std::vector<std::string> &, std::string);
+    char getLetterAtIndex(unsigned int index);
+    /**
+     * Given an english alphabetical character, returns the position as it relates to a node's internal branch storage.
+     */
+    unsigned int getIndexOfLetter(char letter);
 
 public:
     Trie();
     Trie(const Trie &);
+    ~Trie();
     Trie &operator=(Trie);
     /**
      * A method that accepts an std::string and returns void. The word passed into the method should be added to the Trie object. 
