@@ -31,22 +31,20 @@ class Trie
             {
                 std::swap(branches[i], other.branches[i]);
             }
-            std::swap(branches, other.branches);
             std::swap(endOfWord, other.endOfWord);
             return *this;
         }
         // Deep copy constructor for a node.
         Node(const Node &other)
         {
-            *branches = nullptr;
-            if (other.branches)
+            this->setBranchesToNull();
+
+            for (unsigned int i = 0; i < maxBranches; i++)
             {
-                *branches = new Node[26];
-                for (unsigned int i = 0; i < maxBranches; i++)
-                {
-                    branches[i] = new Node(other.branches[i]);
-                }
+                if (other.branches[i])
+                    this->branches[i] = new Node(*(other.branches[i]));
             }
+            this->endOfWord = other.endOfWord;
         }
         // Sets the elements of the array of pointers to null.
         void setBranchesToNull()
@@ -61,11 +59,11 @@ class Trie
         {
             for (unsigned int i = 0; i < 26; i++)
             {
-                delete branches[i];
+                delete this->branches[i];
             }
         }
     };
-    Node *head;
+    Node *head = new Node();
     const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     /**
@@ -87,7 +85,7 @@ class Trie
     /**
      * Helper for the 'allWordsStartingWithPrefix' method. Adds all the words that branch out from a node to the parameter vector.
      */
-    void addWordsAtNodeToVector(std::string &, Node *, std::vector<std::string> &, std::string);
+    void addWordsAtNodeToVector(std::string &, Node *, std::vector<std::string> &, std::string, std::string &);
     /**
      * Returns the character that corresponds to the given index (index = 0-25).
      */
@@ -104,7 +102,7 @@ public:
     Trie &operator=(Trie);
     /**
      * A method that accepts an std::string and returns void. The word passed into the method should be added to the Trie object. 
-     * Duplicate adds should not change the Trie. You may assume that the word is only made up of lower-case characters from a-z.
+     * Duplicate adds should not change the Trie.
      */
     void addAWord(std::string);
 

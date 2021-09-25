@@ -16,16 +16,14 @@ Trie::~Trie()
 
 Trie::Trie(const Trie &other)
 {
-
-    head = other.head;
+    head = nullptr;
+    head = new Node(*(other.head));
 }
 Trie::Trie()
 {
-    head = new Node();
 }
 Trie &Trie::operator=(Trie other)
 {
-    std::swap(head->branches, other.head->branches);
     std::swap(head, other.head);
     return *this;
 }
@@ -43,9 +41,14 @@ void Trie::addAWord(std::string word)
         head->branches[letterPosition] = new Node();
         addAWord(word, currentPosition, head->branches[letterPosition]);
     }
+    other = nullptr;
 }
 bool Trie::isAWord(std::string word)
 {
+    if (word.length() == 0)
+    {
+        return false;
+    }
     unsigned int currentPosition = 0;
     unsigned int letterPostion = getIndexOfLetter(word[currentPosition]);
     Node *other = head->branches[letterPostion];
@@ -57,6 +60,7 @@ bool Trie::isAWord(std::string word)
     {
         return false;
     }
+    other = nullptr;
 }
 std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string prefix)
 {
@@ -79,12 +83,14 @@ std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string prefix)
         {
             std::string wordFragment{""};
             wordFragment += getLetterAtIndex(i);
-            addWordsAtNodeToVector(prefix, branch, words, wordFragment);
+            std::string wordFragmentAtNewNode{wordFragment};
+            addWordsAtNodeToVector(prefix, branch, words, wordFragment, wordFragmentAtNewNode);
         }
+        branch = nullptr;
     }
     return words;
 }
-void Trie::addWordsAtNodeToVector(std::string &prefix, Node *branch, std::vector<std::string> &words, std::string wordFragment)
+void Trie::addWordsAtNodeToVector(std::string &prefix, Node *branch, std::vector<std::string> &words, std::string wordFragment, std::string &initialWordFragment)
 {
     if (branch->endOfWord)
     {
@@ -97,9 +103,11 @@ void Trie::addWordsAtNodeToVector(std::string &prefix, Node *branch, std::vector
         if (newBranch)
         {
             wordFragment += getLetterAtIndex(i);
-            addWordsAtNodeToVector(prefix, newBranch, words, wordFragment);
-            wordFragment = "";
+            std::string wordFragmentAtNewNode{wordFragment};
+            addWordsAtNodeToVector(prefix, newBranch, words, wordFragment, wordFragmentAtNewNode);
+            wordFragment = initialWordFragment; // Revert back to previous word Fragment after finding a term down a path
         }
+        newBranch = nullptr;
     }
 }
 
@@ -120,6 +128,7 @@ bool Trie::isAWord(std::string word, unsigned int &currentPosition, Node *curren
     {
         return false;
     }
+    nextNode = nullptr;
 }
 
 void Trie::addAWord(std::string word, unsigned int &currentPosition, Node *currentNode)
@@ -138,11 +147,10 @@ void Trie::addAWord(std::string word, unsigned int &currentPosition, Node *curre
     }
     else
     {
-        delete nextNode;
         currentNode->branches[letterPosition] = new Node();
-        nextNode = currentNode->branches[letterPosition];
-        addAWord(word, currentPosition, nextNode);
+        addAWord(word, currentPosition, currentNode->branches[letterPosition]);
     }
+    nextNode = nullptr;
 }
 Trie::Node *Trie::findNodeAtPrefix(std::string prefix, unsigned int position, Node *currentNode)
 {
@@ -161,6 +169,7 @@ Trie::Node *Trie::findNodeAtPrefix(std::string prefix, unsigned int position, No
     {
         return nullptr;
     }
+    nextNode = nullptr;
 }
 unsigned int Trie::getIndexOfLetter(char letter)
 {
