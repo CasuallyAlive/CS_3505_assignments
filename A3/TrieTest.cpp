@@ -116,6 +116,7 @@ void testRuleOfThree(Trie *testTrie)
               << std::endl;
     std::cout << "Trie3's reference: " << &testTrie3 << " and Trie2's reference:" << testTrie2 << std::endl;
     std::cout << "Test has concluded! " << std::endl;
+    delete testTrie2;
 }
 
 void wordNotFound(Trie *testTrie, std::string word)
